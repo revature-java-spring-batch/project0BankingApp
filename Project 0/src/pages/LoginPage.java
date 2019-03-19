@@ -13,6 +13,6 @@ public class LoginPage extends Page{
 		LoginPage lp = new LoginPage();
 		lp.displayChoices();
 	}
-
-	
 }
+
+

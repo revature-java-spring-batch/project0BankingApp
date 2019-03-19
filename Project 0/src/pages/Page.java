@@ -3,8 +3,10 @@ package pages;
 import java.util.Scanner;
 
 abstract public class Page {
-	Scanner sc = new Scanner(System.in);
-	public int getInput() {
+	static Scanner sc = new Scanner(System.in);
+	
+	static int getChoice() {
+		System.out.print("Please enter your choice: ");
 		return sc.nextInt();
 	}
 	
