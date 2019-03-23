@@ -15,15 +15,27 @@ public class User {
 		password = "";
 	}
 	
-	User(String user, String pass, USER type){
-		numUsers++;
-		userName = user;
-		password = pass;
-		userType = type;
+	public User(String user, String pass) {
+		this.userName = user;
+		this.password = pass;
 	}
 	
-	public boolean successfulLogin(String user, String pass) {
-		return (user == userName && pass == password);
+	User(String userName, String password, USER userType){
+		numUsers++;
+		this.userName = userName;
+		this.password = password;
+		this.userType = userType;
+	}
+	
+	@Override
+	public int hashCode() {
+		
+		return userName.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return this.userName.equals((String)(obj));
 	}
 	
 	public USER getUserType() {

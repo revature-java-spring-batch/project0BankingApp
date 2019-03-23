@@ -2,13 +2,10 @@ package pages;
 
 import java.util.Scanner;
 
-abstract public class Page {
+public interface Page {
 	static Scanner sc = new Scanner(System.in);
 	
-	static int getChoice() {
-		System.out.print("Please enter your choice: ");
-		return sc.nextInt();
+	static void newPage() {
+		System.out.println("\n\n\n");
 	}
-	
-	abstract void displayChoices();
 }

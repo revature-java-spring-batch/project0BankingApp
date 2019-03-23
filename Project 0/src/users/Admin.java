@@ -1,7 +1,7 @@
 package users;
 
-public class Admin extends Employee{
-	public Admin(String user, String pass, USER type) {
-		super(user, pass, type);
+public class Admin extends User{
+	public Admin(String user, String pass) {
+		super(user, pass, USER.ADMIN);
 	}
 }
