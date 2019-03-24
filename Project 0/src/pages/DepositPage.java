@@ -1,9 +1,9 @@
 package pages;
 
-import bank.Account;
+import repository.BankAppRepository;
 
 public class DepositPage {
-	public double getDepoistAmt(Account account) {
+	public static void deposit(long accountId) {
 		String depositAmt;
 		boolean validAmt = false;
 		double amount = 0;
@@ -12,10 +12,17 @@ public class DepositPage {
 			depositAmt = Page.sc.nextLine();
 			try {
 				amount = Double.parseDouble(depositAmt);
+
+				if (BankAppRepository.deposit(accountId, amount) == 1)
+					validAmt = true;
+				else
+					System.out.println("Unable to deposit amount");
 			} catch (NumberFormatException e) {
 				System.out.println("Invalid input");
 			}
 		}
-		return amount;
+	}
+	public static void main(String[] args) {
+		deposit(1011001001l);
 	}
 }

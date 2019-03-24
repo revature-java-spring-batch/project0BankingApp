@@ -1,6 +1,9 @@
 package main.driver;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -10,6 +13,7 @@ import bank.BankSystem;
 import pages.ApplyAccountPage;
 import pages.CustomerBankingPage;
 import pages.DepositPage;
+import pages.EmployeeBankingPage;
 import pages.LoginPage;
 import pages.Page;
 import pages.RegisterPage;
@@ -32,6 +36,8 @@ public class Test {
 
 		User currentUser;
 		Account currentAccount;
+		List<Account> accountList = new ArrayList<>();
+
 		LoginPage lPage = new LoginPage();
 
 		while (!loggedIn) {
@@ -40,9 +46,9 @@ public class Test {
 
 			do {
 				input = getInput();
-				if (input != 0 && input > 3)
+				if (input < 0 && input > 4)
 					System.out.println("Invalid choice");
-			} while (input != 0 && input > 4);
+			} while (input < 0 && input > 4);
 
 			switch (input) {
 			case 1:
@@ -79,8 +85,8 @@ public class Test {
 		}
 
 		currentUser = lPage.getCurrentUser();
-		currentAccount = BankSystem.getUserAccount().get(currentUser);
-		if (validLogin && currentAccount.getAccountNumber() != 0) {
+		accountList = BankSystem.getUserAccount().get(currentUser);
+		if (validLogin && accountList.size() > 0) {
 			while (usingSystem) {
 
 				Page.newPage();
@@ -89,12 +95,14 @@ public class Test {
 					cbPage.displayChoices();
 					do {
 						input = getInput();
-						if (input != 0 && input > 7)
+						if (input < 0 && input > 7)
 							System.out.println("Invalid choice");
-					} while (input != 0 && input > 7);
+					} while (input < 0 && input > 7);
 
 					switch (input) {
 					case 1:
+						currentAccount = chooseAccount(accountList);
+
 						if (currentAccount.getBalance() == 0)
 							System.out.println("Your balance is zero");
 						else {
@@ -105,12 +113,16 @@ public class Test {
 						}
 						break;
 					case 2:
+						currentAccount = chooseAccount(accountList);
+						
 						double depositAmt = 0;
 						DepositPage dPage = new DepositPage();
 						depositAmt = dPage.getDepoistAmt(currentAccount);
 						// Call deposit from bank system
 						break;
 					case 3:
+						currentAccount = chooseAccount(accountList);
+						
 						if (currentAccount.getBalance() == 0)
 							System.out.println("Your balance is zero");
 						else {
@@ -129,16 +141,19 @@ public class Test {
 									System.out.println("Invalid input");
 								}
 								final Long transferAcct = new Long(transferAccount);
-								Object[] objArr = BankSystem.getUserAccount().entrySet().stream()
-										.filter(x -> x.getValue().getAccountNumber() == transferAcct).toArray();
-								if (objArr.length == 1)
-									transferExists = true;
+								/*
+								 * Object[] objArr = BankSystem.getUserAccount().entrySet().stream() .filter(x
+								 * -> x.getValue().getAccountNumber() == transferAcct).toArray(); if
+								 * (objArr.length == 1) transferExists = true;
+								 */
 							}
 							TransferPage tPage = new TransferPage();
 							tPage.getTransferAmt(currentAccount);
 						}
 						break;
 					case 4:
+						currentAccount = chooseAccount(accountList);
+						
 						System.out.println("Current balance: " + currentAccount.getBalance());
 						break;
 					case 5:
@@ -148,7 +163,26 @@ public class Test {
 						System.exit(0);
 					}
 				} else if (currentUser.getUserType() == USER.EMPLOYEE) {
-
+					EmployeeBankingPage eBPage = new EmployeeBankingPage();
+					eBPage.displayChoices();
+					
+					do {
+						input = getInput();
+						if (input < 0 && input > 4)
+							System.out.println("Invalid choice");
+					} while (input < 0 && input > 4);
+					
+					switch (input) {
+					case 1:
+						
+						break;
+					case 2:
+						
+						break;
+					default:
+						System.exit(0);
+					}
+					
 				} else if (currentUser.getUserType() == USER.ADMIN) {
 
 				}
@@ -169,6 +203,26 @@ public class Test {
 			}
 		} while (true);
 		return input;
+	}
+
+	private static Account chooseAccount(List<Account> accList) {
+		if (accList.size() == 1)
+			return accList.get(0);
+
+		byte input;
+
+		for (int i = 1; i <= accList.size(); i++) {
+			System.out.println(i + ". " + accList.get(i - 1).getAccountNumber());
+		}
+		System.out.println("Please choose which account:");
+
+		do {
+			input = getInput();
+			if (input < 0 && input > accList.size())
+				System.out.println("Invalid choice");
+		} while (input < 0 && input > accList.size());
+
+		return accList.get(input);
 	}
 
 }

@@ -44,7 +44,7 @@ public class ApplyAccountPage {
 			System.out.print("Please enter your phone number: ");
 			phoneNumber = Page.sc.next();
 			
-			if(phoneNumber.length() == 10 || phoneNumber.length() == 1)
+			if(phoneNumber.length() == 10)
 				isValidPhoneNum = true;
 			else
 				System.out.println("Invalid phone number");

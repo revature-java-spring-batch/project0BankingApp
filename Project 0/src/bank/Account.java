@@ -5,18 +5,24 @@ public class Account {
 	private double balance;
 	final private ACCOUNTTYPE accountType;
 	private boolean jointAccount = false;
+	private boolean active;
 	
 	public enum ACCOUNTTYPE{
 		CHECKING, SAVINGS
 	}
 	
-	Account(long aNum, double bal, ACCOUNTTYPE aType, boolean jAcc){
+	public Account(long aNum, double bal, ACCOUNTTYPE aType, boolean jAcc, boolean act){
 		accountNumber = aNum;
 		balance = bal;
 		accountType = aType;
 		jointAccount = jAcc;
+		active = act;
 	}
 	
+	public boolean isActive() {
+		return active;
+	}
+
 	public long getAccountNumber() {
 		return accountNumber;
 	}
