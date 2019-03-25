@@ -1,11 +1,12 @@
 package pages;
 
 import dto.PersonalInfo;
+import repository.BankAppRepository;
 
 public class ApplyAccountPage {
 	private PersonalInfo personInfo;
 	
-	void retrievePersonalInfo() {
+	public void retrievePersonalInfo(String user) {
 		String firstName = null, lastName = null, address = null, phoneNumber = null;
 		
 		boolean isValidFirst = false, isValidLast = false, isValidAddress = false, isValidPhoneNum = false;
@@ -51,6 +52,7 @@ public class ApplyAccountPage {
 		}
 		
 		personInfo = new PersonalInfo(firstName, lastName, address, phoneNumber);
+		BankAppRepository.createBankApplication(personInfo, user);
 	}
 
 	public PersonalInfo getPersonInfo() {

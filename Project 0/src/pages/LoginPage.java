@@ -1,8 +1,5 @@
 package pages;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import repository.BankAppRepository;
 import users.User;
 
@@ -13,7 +10,7 @@ public class LoginPage implements ChoicePage{
 		System.out.println("1. Login \n2. Register \n3. Apply For Account \n4. Exit");
 	}
 	
-	public boolean login(Map<User, String> loginInfo) {
+	public boolean login() {
 		String user, pass;
 		System.out.print("Username: ");
 		user = Page.sc.next();
@@ -22,10 +19,9 @@ public class LoginPage implements ChoicePage{
 		pass = Page.sc.next();
 		
 		//Query database here to check for valid username and password
-		if(BankAppRepository.verifyUser(user, pass)) {
-			currentUser = new User(user,pass);
+		currentUser = BankAppRepository.verifyUser(user, pass);
+		if(currentUser != null)
 			return true;
-		}
 		else
 			return false;
 	}

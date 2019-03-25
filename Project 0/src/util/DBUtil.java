@@ -10,11 +10,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
+
 public class DBUtil {
 	static String url, username, password;
 	static Connection conn = null;
+	static BasicDataSource connectionPool= new BasicDataSource();
 	static {
-		Properties properties= new Properties();
+		/*Properties properties= new Properties();
 		try {
 			properties.load(new FileReader("C:\\Users\\Johnny Tran\\Desktop\\project0BankingApp\\Project 0\\src\\resource\\database.properties"));
 			url = properties.getProperty("url");
@@ -27,16 +30,29 @@ public class DBUtil {
 			System.out.println("Cannot find file");
 		} catch (IOException e) {
 			System.out.println("Error reading file");
+		}*/
+		
+		
+		try {
+			Properties p= new Properties();
+			p.load(new FileReader("C:\\Users\\Johnny Tran\\Desktop\\project0BankingApp\\Project 0\\src\\resource\\database.properties"));
+			connectionPool.setUrl(p.getProperty("url"));
+			connectionPool.setUsername(p.getProperty("username"));
+			connectionPool.setPassword(p.getProperty("password"));
+			connectionPool.setMaxTotal(20);
+			connectionPool.setDefaultAutoCommit(false);
+		}catch(IOException e) {
 		}
 	}
 	
 	public static Connection getInstance() throws SQLException {
-		if(conn == null)
+		return connectionPool.getConnection();
+		/*if(conn == null)
 		{
 			conn = DriverManager.getConnection(url, username, password);
 			return conn;
 		}
-		return conn;
+		return conn;*/
 	}
 	
 	public static void main(String[] args) throws SQLException {

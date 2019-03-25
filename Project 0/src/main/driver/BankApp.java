@@ -1,15 +1,9 @@
 package main.driver;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import bank.Account;
-import bank.BankSystem;
+import dto.Account;
 import pages.ApplyAccountPage;
 import pages.CustomerBankingPage;
 import pages.DepositPage;
@@ -19,16 +13,12 @@ import pages.Page;
 import pages.RegisterPage;
 import pages.TransferPage;
 import pages.WithdrawPage;
-import users.Customer;
+import repository.BankAppRepository;
 import users.User;
 import users.User.USER;
 
-public class Test {
+public class BankApp {
 	public static void main(String[] args) {
-		/*
-		 * testBankSystem.userPassList.put("jtran", "pass");
-		 * testBankSystem.userPassList.put("jbtran64", "password");
-		 */
 		boolean validLogin = false;
 		boolean loggedIn = false;
 		boolean usingSystem = true;
@@ -36,7 +26,7 @@ public class Test {
 
 		User currentUser;
 		Account currentAccount;
-		List<Account> accountList = new ArrayList<>();
+		List<Account> accountList;
 
 		LoginPage lPage = new LoginPage();
 
@@ -55,7 +45,7 @@ public class Test {
 				validLogin = false;
 				Page.newPage();
 				while (!validLogin) {
-					validLogin = lPage.login(testBankSystem.userPassList);
+					validLogin = lPage.login();
 					if (!validLogin)
 						System.out.println("Invalid username or password");
 				}
@@ -64,31 +54,28 @@ public class Test {
 			case 2:
 				Page.newPage();
 				RegisterPage rPage = new RegisterPage();
-				rPage.getUserInfo(testBankSystem.userPassList);
-				// Insert new user into users table and customer table
+				rPage.getUserInfo();
 				break;
 			case 3:
 				validLogin = false;
 				LoginPage loginPage = new LoginPage();
 				while (!validLogin) {
-					validLogin = loginPage.login(testBankSystem.userPassList);
+					validLogin = loginPage.login();
 					if (!validLogin)
 						System.out.println("Invalid username or password");
 				}
 				ApplyAccountPage aAPage = new ApplyAccountPage();
-				aAPage.getPersonInfo();
-				// Create new application and add to database
+				aAPage.retrievePersonalInfo(loginPage.getCurrentUser().getUserName());
 				break;
 			default:
 				System.exit(0);
 			}
 		}
-
+		
 		currentUser = lPage.getCurrentUser();
-		accountList = BankSystem.getUserAccount().get(currentUser);
+		accountList = BankAppRepository.getUserAccounts(currentUser.getUserName());
 		if (validLogin && accountList.size() > 0) {
 			while (usingSystem) {
-
 				Page.newPage();
 				if (currentUser.getUserType() == USER.CUSTOMER) {
 					CustomerBankingPage cbPage = new CustomerBankingPage();
@@ -106,19 +93,14 @@ public class Test {
 						if (currentAccount.getBalance() == 0)
 							System.out.println("Your balance is zero");
 						else {
-							double withdrawAmt = 0;
-							WithdrawPage wPage = new WithdrawPage();
-							withdrawAmt = wPage.getWithdrawalAmt(currentAccount);
 							// Call withdraw from bank system
+							WithdrawPage.withdraw(currentAccount.getAccountNumber());
 						}
 						break;
 					case 2:
 						currentAccount = chooseAccount(accountList);
-						
-						double depositAmt = 0;
-						DepositPage dPage = new DepositPage();
-						depositAmt = dPage.getDepoistAmt(currentAccount);
 						// Call deposit from bank system
+						DepositPage.deposit(currentAccount.getAccountNumber());
 						break;
 					case 3:
 						currentAccount = chooseAccount(accountList);
@@ -126,7 +108,6 @@ public class Test {
 						if (currentAccount.getBalance() == 0)
 							System.out.println("Your balance is zero");
 						else {
-							double transferAmt = 0;
 							long transferAccount = 0;
 							boolean transferExists = false;
 							String accNum;
@@ -137,18 +118,14 @@ public class Test {
 								try {
 									accNum = Page.sc.nextLine();
 									transferAccount = Long.parseLong(accNum);
+									
+									if(BankAppRepository.verifyAccount(transferAccount))
+										transferExists = true;
 								} catch (NumberFormatException e) {
 									System.out.println("Invalid input");
 								}
-								final Long transferAcct = new Long(transferAccount);
-								/*
-								 * Object[] objArr = BankSystem.getUserAccount().entrySet().stream() .filter(x
-								 * -> x.getValue().getAccountNumber() == transferAcct).toArray(); if
-								 * (objArr.length == 1) transferExists = true;
-								 */
 							}
-							TransferPage tPage = new TransferPage();
-							tPage.getTransferAmt(currentAccount);
+							TransferPage.transfer(currentAccount.getAccountNumber(), transferAccount);
 						}
 						break;
 					case 4:
@@ -222,7 +199,7 @@ public class Test {
 				System.out.println("Invalid choice");
 		} while (input < 0 && input > accList.size());
 
-		return accList.get(input);
+		return accList.get(input - 1);
 	}
 
 }

@@ -1,4 +1,4 @@
-package bank;
+package dto;
 
 public class Account {
 	final private long accountNumber;

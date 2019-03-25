@@ -1,17 +1,13 @@
 package pages;
 
-import java.util.Map;
-
-import users.Customer;
+import repository.BankAppRepository;
 import users.User;
-import users.User.USER;
 
 public class RegisterPage implements Page{
 	private User newUser;
-	private String userNameIn, passwordIn, firstName, lastName, address;
-	private String phoneNumber;
+	private String userNameIn, passwordIn;
 
-	public void getUserInfo(Map<User, String> loginInfo) {
+	public void getUserInfo() {
 		boolean isValidUser = false, isValidPass = false;
 		
 		while(!isValidUser){
@@ -19,7 +15,7 @@ public class RegisterPage implements Page{
 			userNameIn = Page.sc.next();
 			
 			//Validate unique username here
-			if(!loginInfo.containsKey(userNameIn))
+			if(BankAppRepository.verifyUserName(userNameIn))
 				isValidUser = true;
 			else
 				System.out.println("Invalid Username");
@@ -36,7 +32,8 @@ public class RegisterPage implements Page{
 				System.out.println("Invalid password");
 		}
 		
-		newUser = new User(userNameIn, passwordIn);
+		//insert new user into users table
+		BankAppRepository.addNewUser(userNameIn, passwordIn);
 	}
 	
 	public User getCurrentCustomer() {

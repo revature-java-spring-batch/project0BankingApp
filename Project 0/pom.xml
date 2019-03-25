@@ -34,5 +34,11 @@
 			<version>12.1.0.2</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-dbcp -->
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-dbcp</artifactId>
+			<version>9.0.17</version>
+		</dependency>
 	</dependencies>
 </project>
