@@ -161,7 +161,7 @@ public class BankAppRepository {
 		
 		try {
 			conn = DBUtil.getInstance();
-			String sql = "select * from bank_accounts where username=?";
+			String sql = "select * from bank_accounts where username=? and active=1";
 			st = conn.prepareStatement(sql);
 			st.setString(1, user);
 
@@ -245,7 +245,7 @@ public class BankAppRepository {
 		return null;
 	}
 
-	public static int withdraw(Long accountId, double amount) {
+	public static boolean withdraw(Long accountId, double amount) {
 		try {
 			conn = DBUtil.getInstance();
 			String sql = "update bank_accounts set balance = balance - ? where account_id = ? and balance >= ?";
@@ -257,17 +257,20 @@ public class BankAppRepository {
 			int result = st.executeUpdate();
 			
 			try { conn.commit(); } catch (Exception e) { }
-			return result;
+			if(result == 0)
+				return false;
+			else
+				return true;
 		} catch (SQLException e) {
 			try { conn.rollback(); } catch (Exception e1) { }
 			System.out.println("Error. Could not perform withdrawal. Try again later");
 		} finally {
 			closeStatementConnection();
 		}
-		return 0;
+		return false;
 	}
 
-	public static int deposit(Long accountId, double amount) {
+	public static boolean deposit(Long accountId, double amount) {
 		try {
 			conn = DBUtil.getInstance();
 			String sql = "update bank_accounts set balance = balance + ? where account_id = ? and balance >= ?";
@@ -277,19 +280,21 @@ public class BankAppRepository {
 			st.setDouble(3, amount);
 
 			int result = st.executeUpdate();
-
 			try { conn.commit(); } catch (Exception e) { }
-			return result;
+			if(result == 0)
+				return false;
+			else
+				return true;
 		} catch (SQLException e) {
 			try { conn.rollback(); } catch (Exception e1) { }
 			System.out.println("Error. Could not perform deposit. Try again later");
 		} finally {
 			closeStatementConnection();
 		}
-		return 0;
+		return false;
 	}
 
-	public static int transfer(long fromAccountId, long toAccountId, double amount) {
+	public static boolean transfer(long fromAccountId, long toAccountId, double amount) {
 		PreparedStatement withdrawSt = null;
 		PreparedStatement depositSt = null;
 		int depStatus = 0;
@@ -317,10 +322,10 @@ public class BankAppRepository {
 			// transaction record
 			if (depStatus == 1 && withStatus == 1) {
 				try { conn.commit(); } catch (Exception e) { }
-				return 1;
+				return true;
 			} else {
 				conn.rollback();
-				return 0;
+				return false;
 			}
 		} catch (SQLException e) {
 			try { conn.rollback(); } catch (Exception e1) { }
@@ -330,7 +335,7 @@ public class BankAppRepository {
 			try { withdrawSt.close(); } catch (Exception e) { }
 			try { conn.close(); } catch (Exception e) { }
 		}
-		return 0;
+		return false;
 	}
 
 	public static void addNewUser(String user, String pass) {
@@ -372,22 +377,28 @@ public class BankAppRepository {
 		}
 	}
 	
-	public static void approveOrDenyBankApplication(long appId, int i) {
+	public static boolean approveOrDenyBankApplication(long appId, int i) {
 		try {
 			conn = DBUtil.getInstance();
 			String sql = "update bank_applications set approved = ? where application_id = ?";
 			st = conn.prepareStatement(sql);
 			st.setInt(1, i);
 			st.setLong(2, appId);
-			st.executeUpdate();
+			int result = st.executeUpdate();
 			
 			try { conn.commit(); } catch (Exception e) { }
+			if(result == 0)
+				return false;
+			else {
+				return true;
+			}
 		} catch (SQLException e) {
 			try { conn.rollback(); } catch (Exception e1) { }
 			System.out.println("Error. Could not find application. Try again later.");
 		}finally {
 			closeStatementConnection();
 		}
+		return false;
 	}
 	
 	public static void approveOrDenyJointApplication(long appId, int i) {
@@ -508,7 +519,7 @@ public class BankAppRepository {
 		}
 	}
 	
-	public static void createTransaction(TRANSACTION_TYPE type, double amount, long from, long to) {
+	public static long createTransaction(TRANSACTION_TYPE type, double amount, long from, long to) {
 		try {
 			conn = DBUtil.getInstance();
 			String sql = "insert into transactions (transaction_type, amount, account_id_from, account_id_to) values(?,?,?,?)";
@@ -526,15 +537,31 @@ public class BankAppRepository {
 			
 			st.executeUpdate();
 			
+			sql = "select * from transactions where account_id_from=? and account_id_to=?";
+			st = conn.prepareStatement(sql);
+			st.setLong(1, from);
+			st.setLong(2, to);
+			rs = st.executeQuery();
+			
+			long recentTransactionId = 0;
+			while(rs.next()) {
+				long tempId = rs.getLong(1);
+				if(tempId > recentTransactionId)
+					recentTransactionId = tempId;
+			}
+			
 			try { conn.commit(); } catch (Exception e) { }
+			return recentTransactionId;
 		} catch (SQLException e) {
 			try { conn.rollback(); } catch (Exception e1) { }
 			System.out.println("Error. Could not create application. Try again later.");
 		}finally {
-			closeStatementConnection();
+			closeConnections();
 		}
+		return 0;
 	}
 	
+	//if customer exist dont add
 	public static void createCustomer(String user, String fName, String lName, String address, String phoneNum) {
 		try {
 			conn = DBUtil.getInstance();
@@ -571,8 +598,14 @@ public class BankAppRepository {
 			rs = st.executeQuery();
 			
 			while(rs.next()) {
+				ACCOUNTTYPE type;
+				String aType = rs.getString(8);
+				if(aType == "Checking")
+					type = ACCOUNTTYPE.CHECKING;
+				else
+					type = ACCOUNTTYPE.SAVINGS;
 				applications.add(new BankAccountApplication(rs.getLong(1), rs.getString(2), rs.getBoolean(3),
-								rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7)));
+								rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), type));
 			}
 			return applications;
 		} catch (SQLException e) {
@@ -682,7 +715,7 @@ public class BankAppRepository {
 	}
 	
 	public static void main(String[] args) {
-		User user = verifyUser("jbtran", "pass123");
-		System.out.println(user.getUserType().toString());
+		
+		
 	}
 }

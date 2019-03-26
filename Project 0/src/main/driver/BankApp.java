@@ -41,9 +41,9 @@ public class BankApp {
 
 			do {
 				input = getInput();
-				if (input < 0 && input > 4)
+				if (input < 0 || input > 4)
 					System.out.println("Invalid choice");
-			} while (input < 0 && input > 4);
+			} while (input < 0 || input > 4);
 
 			switch (input) {
 			case 1:
@@ -79,7 +79,7 @@ public class BankApp {
 		
 		currentUser = lPage.getCurrentUser();
 		accountList = BankAppRepository.getUserAccounts(currentUser.getUserName());
-		if (validLogin && accountList.size() > 0) {
+		if ((validLogin && accountList.size() > 0) || (validLogin && (currentUser.getUserType() == USER.ADMIN || currentUser.getUserType() == USER.EMPLOYEE))) {
 			while (usingSystem) {
 				Page.newPage();
 				if (currentUser.getUserType() == USER.CUSTOMER) {
@@ -87,9 +87,9 @@ public class BankApp {
 					cbPage.displayChoices();
 					do {
 						input = getInput();
-						if (input < 0 && input > 7)
+						if (input < 0 || input > 7)
 							System.out.println("Invalid choice");
-					} while (input < 0 && input > 7);
+					} while (input < 0 || input > 7);
 
 					switch (input) {
 					case 1:
@@ -148,18 +148,18 @@ public class BankApp {
 					
 					do {
 						input = getInput();
-						if (input < 0 && input > 4)
+						if (input < 0 || input > 4)
 							System.out.println("Invalid choice");
-					} while (input < 0 && input > 4);
+					} while (input < 0 || input > 4);
 					
 					switch (input) {
 					case 1:
 						eBPage.displayApplicationChoices();
 						do {
 							input = getInput();
-							if (input < 0 && input > 3)
+							if (input < 0 || input > 3)
 								System.out.println("Invalid choice");
-						} while (input < 0 && input > 3);
+						} while (input < 0 || input > 3);
 						
 						switch(input) {
 						case 1: 
@@ -179,6 +179,9 @@ public class BankApp {
 
 				}
 			}
+		}
+		else {
+			System.out.println("You do not have any active accounts.");
 		}
 	}
 
@@ -210,9 +213,9 @@ public class BankApp {
 
 		do {
 			input = getInput();
-			if (input < 0 && input > accList.size())
+			if (input < 0 || input > accList.size())
 				System.out.println("Invalid choice");
-		} while (input < 0 && input > accList.size());
+		} while (input < 0 || input > accList.size());
 
 		return accList.get(input - 1);
 	}

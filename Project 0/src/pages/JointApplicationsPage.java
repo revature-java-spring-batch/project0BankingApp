@@ -26,9 +26,9 @@ public class JointApplicationsPage {
 			System.out.println("1. Perform action \n2. exit");
 			do {
 				input = getInput();
-				if (input < 0 && input > 3)
+				if (input < 0 || input > 3)
 					System.out.println("Invalid choice");
-			} while (input < 0 && input > 3);
+			} while (input < 0 || input > 3);
 
 			if (input == 1) {
 				int rowNum;
@@ -37,23 +37,27 @@ public class JointApplicationsPage {
 					input = getInput();
 					if (input < 0 && input > applications.size() + 1)
 						System.out.println("Invalid choice");
-				} while (input < 0 && input > applications.size() + 1);
+				} while (input < 0 || input > applications.size() + 1);
 
 				rowNum = input;
 
 				System.out.println("1. Approve Account \n2. Deny Account");
 				do {
 					input = getInput();
-					if (input < 0 && input > 3)
+					if (input < 0 || input > 3)
 						System.out.println("Invalid choice");
-				} while (input < 0 && input > 3);
+				} while (input < 0 || input > 3);
 
 				switch (input) {
 				case 1:
-					BankAppRepository.approveOrDenyJointApplication(applications.get(rowNum).getApplicationId(), 1);
+					JointAccountApplication app = applications.get(rowNum - 1);
+					BankAppRepository.approveOrDenyJointApplication(app.getApplicationId(), 1);
+					
+					BankAppRepository.createBankAccount(app.getAccountType(), true, app.getPrimaryUser());
+					BankAppRepository.createJointAccount(app.getPrimaryUser(), app.getJointUser());
 					break;
 				default:
-					BankAppRepository.approveOrDenyJointApplication(applications.get(rowNum).getApplicationId(), 0);
+					BankAppRepository.approveOrDenyJointApplication(applications.get(rowNum - 1).getApplicationId(), 0);
 				}
 			}
 		}

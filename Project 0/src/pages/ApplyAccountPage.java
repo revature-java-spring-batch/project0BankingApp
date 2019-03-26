@@ -51,6 +51,8 @@ public class ApplyAccountPage {
 				System.out.println("Invalid phone number");
 		}
 		
+		//Ask user for account type
+		
 		personInfo = new PersonalInfo(firstName, lastName, address, phoneNumber);
 		BankAppRepository.createBankApplication(personInfo, user);
 	}

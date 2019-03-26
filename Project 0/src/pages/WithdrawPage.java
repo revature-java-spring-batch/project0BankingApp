@@ -1,8 +1,12 @@
 package pages;
 
+import org.apache.log4j.Logger;
+import main.driver.BankApp.TRANSACTION_TYPE;
 import repository.BankAppRepository;
 
 public class WithdrawPage {
+	static Logger logger = Logger.getLogger(WithdrawPage.class);
+	private static TRANSACTION_TYPE type = TRANSACTION_TYPE.WITHDRAW;
 	public static void withdraw(long accountId) {
 		String withdrawalAmt;
 		boolean validAmt = false;
@@ -15,8 +19,14 @@ public class WithdrawPage {
 				// Validate withdrawal amount
 				
 				
-				if (BankAppRepository.withdraw(accountId, amount) == 1)
+				if (BankAppRepository.withdraw(accountId, amount)) {
 					validAmt = true;
+					long transactionId = BankAppRepository.createTransaction(type, amount, accountId, accountId);
+					String transaction = String.format("Transaction Id = %d  Transaction Type= %s  Transaction Amount=$ %f  Account Id From= %d  Account Id To= %d"
+										, transactionId, type.toString(), amount, accountId, accountId);
+					logger.info(transaction);
+					System.out.println("Withdraw Successful");
+				}
 				else
 					System.out.println("Insufficient funds. Enter a valid amount");
 			} catch (NumberFormatException e) {
@@ -26,6 +36,6 @@ public class WithdrawPage {
 	}
 	
 	public static void main(String[] args) {
-		withdraw(1011001001l);
+		logger.info("Test");
 	}
 }

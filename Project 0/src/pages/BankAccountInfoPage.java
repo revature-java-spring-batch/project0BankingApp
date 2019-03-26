@@ -13,6 +13,7 @@ public class BankAccountInfoPage {
 		if (accounts == null)
 			System.out.println("No more records.");
 		else {
+			printHeader();
 			for (Account account : accounts) {
 				String joint = null;
 				String active = null;

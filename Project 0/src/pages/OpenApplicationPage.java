@@ -1,7 +1,6 @@
 package pages;
 
 import java.util.List;
-
 import dto.BankAccountApplication;
 import repository.BankAppRepository;
 import users.Customer;
@@ -28,34 +27,43 @@ public class OpenApplicationPage {
 			System.out.println("1. Perform action \n2. exit");
 			do {
 				input = getInput();
-				if (input < 0 && input > 3)
+				if (input < 0 || input > 3)
 					System.out.println("Invalid choice");
-			} while (input < 0 && input > 3);
+			} while (input < 0 || input > 3);
 
 			if (input == 1) {
 				int rowNum;
 				System.out.print("Enter the row number of the application: ");
 				do {
 					input = getInput();
-					if (input < 0 && input > applications.size() + 1)
+					if (input < 0 || input > applications.size() + 1)
 						System.out.println("Invalid choice");
-				} while (input < 0 && input > applications.size() + 1);
+				} while (input < 0 || input > applications.size() + 1);
 
 				rowNum = input;
 
-				System.out.println("1. Approve Account \n2. Deny Account");
+				System.out.println("1. Approve Account \n2. Deny Account \n3. Cancel");
 				do {
 					input = getInput();
-					if (input < 0 && input > 3)
+					if (input < 0 || input > 4)
 						System.out.println("Invalid choice");
-				} while (input < 0 && input > 3);
+				} while (input < 0 || input > 4);
 
 				switch (input) {
 				case 1:
-					BankAppRepository.approveOrDenyBankApplication(applications.get(rowNum - 1).getApplicationId(), 1);
+					Customer customer;
+					BankAccountApplication app = applications.get(rowNum - 1);
+					BankAppRepository.approveOrDenyBankApplication(app.getApplicationId(), 1);
+
+					customer = app.getCustomer();
+
+					BankAppRepository.createBankAccount(app.getType(), false, app.getCustomer().getUserName());
+					BankAppRepository.createCustomer(customer.getUserName(), customer.getFirstName(),
+							customer.getLastName(), customer.getAddress(), customer.getPhoneNumber());
 					break;
-				default:
+				case 2:
 					BankAppRepository.approveOrDenyBankApplication(applications.get(rowNum - 1).getApplicationId(), 0);
+					break;
 				}
 			}
 		}
