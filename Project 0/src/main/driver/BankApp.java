@@ -1,14 +1,16 @@
 package main.driver;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import dto.Account;
 import pages.ApplyAccountPage;
+import pages.BankAccountInfoPage;
 import pages.CustomerBankingPage;
 import pages.DepositPage;
 import pages.EmployeeBankingPage;
+import pages.JointAccountPage;
+import pages.JointApplicationsPage;
 import pages.LoginPage;
+import pages.OpenApplicationPage;
 import pages.Page;
 import pages.RegisterPage;
 import pages.TransferPage;
@@ -18,6 +20,9 @@ import users.User;
 import users.User.USER;
 
 public class BankApp {
+	public enum TRANSACTION_TYPE{
+		WITHDRAW, DEPOSIT, TRANSFER
+	}
 	public static void main(String[] args) {
 		boolean validLogin = false;
 		boolean loggedIn = false;
@@ -93,13 +98,11 @@ public class BankApp {
 						if (currentAccount.getBalance() == 0)
 							System.out.println("Your balance is zero");
 						else {
-							// Call withdraw from bank system
 							WithdrawPage.withdraw(currentAccount.getAccountNumber());
 						}
 						break;
 					case 2:
 						currentAccount = chooseAccount(accountList);
-						// Call deposit from bank system
 						DepositPage.deposit(currentAccount.getAccountNumber());
 						break;
 					case 3:
@@ -134,7 +137,7 @@ public class BankApp {
 						System.out.println("Current balance: " + currentAccount.getBalance());
 						break;
 					case 5:
-
+						JointAccountPage.getUserInput(currentUser);
 						break;
 					default:
 						System.exit(0);
@@ -151,15 +154,27 @@ public class BankApp {
 					
 					switch (input) {
 					case 1:
+						eBPage.displayApplicationChoices();
+						do {
+							input = getInput();
+							if (input < 0 && input > 3)
+								System.out.println("Invalid choice");
+						} while (input < 0 && input > 3);
 						
+						switch(input) {
+						case 1: 
+							OpenApplicationPage.displayBankApplications();
+							break;
+						default:
+							JointApplicationsPage.displayJointApplications();
+						}
 						break;
 					case 2:
-						
+						BankAccountInfoPage.displayAccountsInfo();
 						break;
 					default:
 						System.exit(0);
 					}
-					
 				} else if (currentUser.getUserType() == USER.ADMIN) {
 
 				}
@@ -201,10 +216,5 @@ public class BankApp {
 
 		return accList.get(input - 1);
 	}
-
-}
-
-class testBankSystem {
-	static Map<User, String> userPassList = new HashMap<>();
 
 }

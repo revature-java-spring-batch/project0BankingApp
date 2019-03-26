@@ -20,6 +20,10 @@ public class User {
 		this.password = pass;
 	}
 	
+	public User(String user) {
+		this.userName = user;
+	}
+	
 	public User(String userName, String password, USER userType){
 		numUsers++;
 		this.userName = userName;

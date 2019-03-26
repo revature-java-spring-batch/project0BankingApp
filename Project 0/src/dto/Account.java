@@ -6,19 +6,25 @@ public class Account {
 	final private ACCOUNTTYPE accountType;
 	private boolean jointAccount = false;
 	private boolean active;
+	private String username;
 	
 	public enum ACCOUNTTYPE{
 		CHECKING, SAVINGS
 	}
 	
-	public Account(long aNum, double bal, ACCOUNTTYPE aType, boolean jAcc, boolean act){
+	public Account(long aNum, double bal, ACCOUNTTYPE aType, boolean jAcc, boolean act, String user){
 		accountNumber = aNum;
 		balance = bal;
 		accountType = aType;
 		jointAccount = jAcc;
 		active = act;
+		username = user;
 	}
 	
+	public String getUsername() {
+		return username;
+	}
+
 	public boolean isActive() {
 		return active;
 	}

@@ -14,6 +14,14 @@ public class Customer extends User{
 		this.phoneNumber = phoneNumber;
 	}
 	
+	public Customer(String user, USER type, String firstName, String lastName, String address, String phoneNumber) {
+		super(user);
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address = address;
+		this.phoneNumber = phoneNumber;
+	}
+	
 	public String getAddress() {
 		return address;
 	}
