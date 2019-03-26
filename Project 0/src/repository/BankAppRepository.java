@@ -71,7 +71,7 @@ public class BankAppRepository {
 			st.setString(1, user);
 			rs = st.executeQuery();
 
-			if (rs.next() && rs.getInt(1) == 0)
+			if (rs.next() && rs.getInt(1) == 1)
 				return true;
 
 			else
@@ -127,6 +127,35 @@ public class BankAppRepository {
 		return false;
 	}
 
+	public static Account getAccount(long accId) {
+		try {
+			conn = DBUtil.getInstance();
+			String sql = "select * from bank_accounts where account_id=?";
+			st = conn.prepareStatement(sql);
+			st.setLong(1, accId);
+
+			rs = st.executeQuery();
+			
+			while(rs.next()) {
+				ACCOUNTTYPE temp;
+				String type = rs.getString(3);
+
+				if(type.equals("Checking"))
+					temp = ACCOUNTTYPE.CHECKING;
+				else
+					temp = ACCOUNTTYPE.SAVINGS;
+				return new Account(rs.getLong(1), rs.getDouble(2), temp, rs.getBoolean("joint_account"), rs.getBoolean(5), rs.getString(6));
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("Error. Could not find account. Try again later." + e.getMessage());
+		} finally {
+			closeConnections();
+		}
+		
+		return null;
+	}
+	
 	public static List<Account> getUserAccounts(String user) {
 		List<Account> accList = new ArrayList<>();
 		

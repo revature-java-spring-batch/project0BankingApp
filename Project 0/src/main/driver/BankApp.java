@@ -134,7 +134,7 @@ public class BankApp {
 					case 4:
 						currentAccount = chooseAccount(accountList);
 						
-						System.out.println("Current balance: " + currentAccount.getBalance());
+						System.out.println(BankAppRepository.getAccount(currentAccount.getAccountNumber()).getBalance());
 						break;
 					case 5:
 						JointAccountPage.getUserInput(currentUser);
