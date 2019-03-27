@@ -1,7 +1,6 @@
 package pages;
 
 public class CustomerBankingPage implements ChoicePage {
-
 	@Override
 	public void displayChoices() {
 		System.out.println(

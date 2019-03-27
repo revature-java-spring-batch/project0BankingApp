@@ -2,9 +2,11 @@ package main.driver;
 
 import java.util.List;
 import dto.Account;
+import pages.AdminBankingPage;
 import pages.ApplyAccountPage;
 import pages.BankAccountInfoPage;
 import pages.CustomerBankingPage;
+import pages.CustomerInfoPage;
 import pages.DepositPage;
 import pages.EmployeeBankingPage;
 import pages.JointAccountPage;
@@ -20,9 +22,10 @@ import users.User;
 import users.User.USER;
 
 public class BankApp {
-	public enum TRANSACTION_TYPE{
+	public enum TRANSACTION_TYPE {
 		WITHDRAW, DEPOSIT, TRANSFER
 	}
+
 	public static void main(String[] args) {
 		boolean validLogin = false;
 		boolean loggedIn = false;
@@ -35,8 +38,8 @@ public class BankApp {
 
 		LoginPage lPage = new LoginPage();
 
+		System.out.println("Welcome to the Revature banking app!");
 		while (!loggedIn) {
-			Page.newPage();
 			lPage.displayChoices();
 
 			do {
@@ -48,7 +51,6 @@ public class BankApp {
 			switch (input) {
 			case 1:
 				validLogin = false;
-				Page.newPage();
 				while (!validLogin) {
 					validLogin = lPage.login();
 					if (!validLogin)
@@ -57,7 +59,6 @@ public class BankApp {
 				loggedIn = true;
 				break;
 			case 2:
-				Page.newPage();
 				RegisterPage rPage = new RegisterPage();
 				rPage.getUserInfo();
 				break;
@@ -76,10 +77,12 @@ public class BankApp {
 				System.exit(0);
 			}
 		}
-		
+
+		System.out.println("Successful Login!");
 		currentUser = lPage.getCurrentUser();
 		accountList = BankAppRepository.getUserAccounts(currentUser.getUserName());
-		if ((validLogin && accountList.size() > 0) || (validLogin && (currentUser.getUserType() == USER.ADMIN || currentUser.getUserType() == USER.EMPLOYEE))) {
+		if ((validLogin && accountList.size() > 0) || (validLogin
+				&& (currentUser.getUserType() == USER.ADMIN || currentUser.getUserType() == USER.EMPLOYEE))) {
 			while (usingSystem) {
 				Page.newPage();
 				if (currentUser.getUserType() == USER.CUSTOMER) {
@@ -95,7 +98,7 @@ public class BankApp {
 					case 1:
 						currentAccount = chooseAccount(accountList);
 
-						if (currentAccount.getBalance() == 0)
+						if (!BankAppRepository.verifyFunds(currentAccount.getAccountNumber(), 1))
 							System.out.println("Your balance is zero");
 						else {
 							WithdrawPage.withdraw(currentAccount.getAccountNumber());
@@ -107,8 +110,8 @@ public class BankApp {
 						break;
 					case 3:
 						currentAccount = chooseAccount(accountList);
-						
-						if (currentAccount.getBalance() == 0)
+
+						if (!BankAppRepository.verifyFunds(currentAccount.getAccountNumber(), 1))
 							System.out.println("Your balance is zero");
 						else {
 							long transferAccount = 0;
@@ -121,9 +124,11 @@ public class BankApp {
 								try {
 									accNum = Page.sc.nextLine();
 									transferAccount = Long.parseLong(accNum);
-									
-									if(BankAppRepository.verifyAccount(transferAccount))
+
+									if (BankAppRepository.verifyAccount(transferAccount))
 										transferExists = true;
+									else
+										System.out.println("Account does not exist.");
 								} catch (NumberFormatException e) {
 									System.out.println("Invalid input");
 								}
@@ -133,8 +138,11 @@ public class BankApp {
 						break;
 					case 4:
 						currentAccount = chooseAccount(accountList);
-						
-						System.out.println(BankAppRepository.getAccount(currentAccount.getAccountNumber()).getBalance());
+						Account acc = BankAppRepository.getAccount(currentAccount.getAccountNumber());
+						if (acc != null)
+							System.out.println("Current Balance: " + acc.getBalance());
+						else
+							System.out.println("Could not access account");
 						break;
 					case 5:
 						JointAccountPage.getUserInput(currentUser);
@@ -145,13 +153,13 @@ public class BankApp {
 				} else if (currentUser.getUserType() == USER.EMPLOYEE) {
 					EmployeeBankingPage eBPage = new EmployeeBankingPage();
 					eBPage.displayChoices();
-					
+
 					do {
 						input = getInput();
-						if (input < 0 || input > 4)
+						if (input < 0 || input > 5)
 							System.out.println("Invalid choice");
-					} while (input < 0 || input > 4);
-					
+					} while (input < 0 || input > 5);
+
 					switch (input) {
 					case 1:
 						eBPage.displayApplicationChoices();
@@ -160,9 +168,9 @@ public class BankApp {
 							if (input < 0 || input > 3)
 								System.out.println("Invalid choice");
 						} while (input < 0 || input > 3);
-						
-						switch(input) {
-						case 1: 
+
+						switch (input) {
+						case 1:
 							OpenApplicationPage.displayBankApplications();
 							break;
 						default:
@@ -172,15 +180,117 @@ public class BankApp {
 					case 2:
 						BankAccountInfoPage.displayAccountsInfo();
 						break;
+					case 3:
+						CustomerInfoPage.displayCustomerInfo();
+						break;
 					default:
 						System.exit(0);
 					}
 				} else if (currentUser.getUserType() == USER.ADMIN) {
+					AdminBankingPage abPage = new AdminBankingPage();
+					abPage.displayChoices();
 
+					do {
+						input = getInput();
+						if (input < 0 || input > 8)
+							System.out.println("Invalid choice");
+					} while (input < 0 || input > 8);
+
+					switch (input) {
+					case 1:
+					case 2:
+					case 3:
+					case 6:
+						boolean validAcc = false;
+						long accountId = 0;
+						while (!validAcc) {
+							System.out.print("Please enter account number: ");
+							String acc = Page.sc.nextLine();
+
+							try {
+								accountId = Long.parseLong(acc);
+							} catch (NumberFormatException e) {
+								System.out.println("Invalid input.");
+							}
+
+							if (BankAppRepository.verifyAccount(accountId))
+								validAcc = true;
+							else
+								System.out.println("Account does not exist.");
+						}
+
+						if (input == 1) {
+							if (!BankAppRepository.verifyFunds(accountId, 1))
+								System.out.println("Your balance is zero");
+							else
+								WithdrawPage.withdraw(accountId);
+						} else if (input == 2) {
+							DepositPage.deposit(accountId);
+						} else if (input == 3) {
+							if (!BankAppRepository.verifyFunds(accountId, 1))
+								System.out.println("Your balance is zero");
+							else {
+								long transferAccount = 0;
+								boolean transferExists = false;
+								String accNum;
+
+								while (!transferExists) {
+									System.out.print("Please enter account number to transfer money to: ");
+
+									try {
+										accNum = Page.sc.nextLine();
+										transferAccount = Long.parseLong(accNum);
+
+										if (BankAppRepository.verifyAccount(transferAccount))
+											transferExists = true;
+										else
+											System.out.println("Account does not exist");
+									} catch (NumberFormatException e) {
+										System.out.println("Invalid input");
+									}
+								}
+								TransferPage.transfer(accountId, transferAccount);
+							}
+						} else {
+							String ans = null;
+							boolean validAns = false;
+							System.out.print("Are you sure you want to cancel this account? (Y/N):  ");
+							while (!validAns) {
+								ans = Page.sc.nextLine();
+								if ("Y".equals(ans.toUpperCase())) {
+									validAns = true;
+									BankAppRepository.cancelAccount(accountId);
+								} else if ("N".equals(ans.toUpperCase())) {
+									validAns = true;
+								}
+							}
+						}
+						break;
+					case 4:
+						abPage.displayApplicationChoices();
+						do {
+							input = getInput();
+							if (input < 0 || input > 3)
+								System.out.println("Invalid choice");
+						} while (input < 0 || input > 3);
+
+						switch (input) {
+						case 1:
+							OpenApplicationPage.displayBankApplications();
+							break;
+						default:
+							JointApplicationsPage.displayJointApplications();
+						}
+						break;
+					case 5:
+						BankAccountInfoPage.displayAccountsInfo();
+						break;
+					default:
+						System.exit(0);
+					}
 				}
 			}
-		}
-		else {
+		} else {
 			System.out.println("You do not have any active accounts.");
 		}
 	}
@@ -219,5 +329,4 @@ public class BankApp {
 
 		return accList.get(input - 1);
 	}
-
 }

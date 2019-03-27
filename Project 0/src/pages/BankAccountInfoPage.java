@@ -5,13 +5,13 @@ import dto.Account;
 import repository.BankAppRepository;
 
 public class BankAccountInfoPage {
-	static String headerSpace = "%-16s %-12s %-18s %-18s %-11s\n\n";
-	static String dataSpace = "%-16d %-12.2f %-18s %-18s %-11s\n\n";
+	static String headerSpace = "%-16s %-12s %-18s %-18s %-11s %-13s\n\n";
+	static String dataSpace = "%-16d %-12.2f %-18s %-18s %-11s %-13s\n\n";
 
 	public static void displayAccountsInfo() {
 		List<Account> accounts = BankAppRepository.getAccountInfo();
-		if (accounts == null)
-			System.out.println("No more records.");
+		if (accounts == null || accounts.size() == 0)
+			System.out.println("No records available");
 		else {
 			printHeader();
 			for (Account account : accounts) {
@@ -29,16 +29,13 @@ public class BankAccountInfoPage {
 					active = "No";
 
 				System.out.format(dataSpace, account.getAccountNumber(), account.getBalance(),
-						account.getAccountType().toString(), joint, active);
+						account.getAccountType().toString(), joint, active, account.getUsername());
 			}
 		}
 	}
 
 	static void printHeader() {
-		System.out.format(headerSpace, "Acccount ID", "Balance", "Acccount Type", "Joint Account", "Active");
-	}
-
-	static void printSpace() {
-		System.out.print("      ");
+		System.out.format(headerSpace, "Acccount ID", "Balance", "Acccount Type", "Joint Account", "Active",
+				"Username");
 	}
 }

@@ -9,16 +9,16 @@ public class BankAccountApplication {
 	private boolean approved;
 	private Customer customer;
 	private ACCOUNTTYPE type;
-	
-	public BankAccountApplication(long appId, String user, boolean approved, 
-			String fName, String lName, String address, String phoneNum, ACCOUNTTYPE type){
-		
+
+	public BankAccountApplication(long appId, String user, boolean approved, String fName, String lName, String address,
+			String phoneNum, ACCOUNTTYPE type) {
+
 		applicationId = appId;
 		this.approved = approved;
 		this.type = type;
 		customer = new Customer(user, USER.CUSTOMER, fName, lName, address, phoneNum);
 	}
-	
+
 	public ACCOUNTTYPE getType() {
 		return type;
 	}
@@ -30,7 +30,7 @@ public class BankAccountApplication {
 	public boolean isApproved() {
 		return approved;
 	}
-	
+
 	public Customer getCustomer() {
 		return customer;
 	}

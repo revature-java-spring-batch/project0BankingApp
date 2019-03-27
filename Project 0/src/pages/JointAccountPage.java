@@ -9,18 +9,18 @@ public class JointAccountPage {
 		String jointUser = null;
 		byte input;
 		String type;
-		
-		while(!validUser) {
+
+		while (!validUser) {
 			System.out.print("Please enter the username of the other joint account user: ");
-			
+
 			jointUser = Page.sc.nextLine();
-			
-			if(BankAppRepository.verifyUserName(jointUser))
+
+			if (BankAppRepository.verifyUserName(jointUser))
 				validUser = true;
 			else
 				System.out.println("Invalid user. Please enter a valid user");
 		}
-		
+
 		System.out.println("Please enter what type of account you would like: ");
 		System.out.println("1. Checking \n2. Savings");
 		do {
@@ -28,15 +28,15 @@ public class JointAccountPage {
 			if (input < 0 && input > 3)
 				System.out.println("Invalid choice");
 		} while (input < 0 && input > 3);
-		if(input == 1)
+		if (input == 1)
 			type = "Checking";
 		else
 			type = "Savings";
-		
+
 		BankAppRepository.createJointApplication(pUser.getUserName(), jointUser, type);
 		System.out.println("Successfully created joint account application");
 	}
-	
+
 	private static byte getInput() {
 		String choice;
 		byte input;

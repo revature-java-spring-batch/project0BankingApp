@@ -1,3 +1,4 @@
 0    [main] INFO  pages.WithdrawPage  - Transaction Id = 100000005  Transaction Type= WITHDRAW  Transaction Amount=$ 100.000000  Account Id From= 1201937861  Account Id To= 1201937861
 0    [main] INFO  pages.WithdrawPage  - Transaction Id = 100000006  Transaction Type= WITHDRAW  Transaction Amount=$ 100.000000  Account Id From= 1201937861  Account Id To= 1201937861
 0    [main] INFO  pages.DepositPage  - Transaction Id = 100000007  Transaction Type= DEPOSIT  Transaction Amount=$ 100.000000  Account Id From= 1011001001  Account Id To= 1011001001
+0    [main] INFO  pages.TransferPage  - Transaction Id = 100000026  Transaction Type= TRANSFER  Transaction Amount=$ 200.000000  Account Id From= 1201937861  Account Id To= 1392874721

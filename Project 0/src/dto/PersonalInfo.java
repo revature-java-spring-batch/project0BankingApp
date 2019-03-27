@@ -2,7 +2,7 @@ package dto;
 
 public class PersonalInfo {
 	private String firstName, lastName, address, phoneNumber;
-	
+
 	public PersonalInfo(String fName, String lName, String address, String pNum) {
 		firstName = fName;
 		lastName = lName;
@@ -25,6 +25,5 @@ public class PersonalInfo {
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
-	
-	
+
 }

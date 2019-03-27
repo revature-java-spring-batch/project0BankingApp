@@ -7,12 +7,12 @@ public class Account {
 	private boolean jointAccount = false;
 	private boolean active;
 	private String username;
-	
-	public enum ACCOUNTTYPE{
+
+	public enum ACCOUNTTYPE {
 		CHECKING, SAVINGS
 	}
-	
-	public Account(long aNum, double bal, ACCOUNTTYPE aType, boolean jAcc, boolean act, String user){
+
+	public Account(long aNum, double bal, ACCOUNTTYPE aType, boolean jAcc, boolean act, String user) {
 		accountNumber = aNum;
 		balance = bal;
 		accountType = aType;
@@ -20,7 +20,7 @@ public class Account {
 		active = act;
 		username = user;
 	}
-	
+
 	public String getUsername() {
 		return username;
 	}
@@ -32,9 +32,11 @@ public class Account {
 	public long getAccountNumber() {
 		return accountNumber;
 	}
+
 	public double getBalance() {
 		return balance;
 	}
+
 	public ACCOUNTTYPE getAccountType() {
 		return accountType;
 	}

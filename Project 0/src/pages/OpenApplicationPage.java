@@ -14,7 +14,7 @@ public class OpenApplicationPage {
 		int count = 1;
 		List<BankAccountApplication> applications = BankAppRepository.getBankApplications();
 
-		if (applications == null)
+		if (applications == null || applications.size() == 0)
 			System.out.println("There are no applications on file.");
 		else {
 			printHeader();
@@ -53,16 +53,20 @@ public class OpenApplicationPage {
 				case 1:
 					Customer customer;
 					BankAccountApplication app = applications.get(rowNum - 1);
-					BankAppRepository.approveOrDenyBankApplication(app.getApplicationId(), 1);
+					if(BankAppRepository.approveOrDenyBankApplication(app.getApplicationId(), 1))
+						System.out.println("Bank Application Approved.");
 
 					customer = app.getCustomer();
 
-					BankAppRepository.createBankAccount(app.getType(), false, app.getCustomer().getUserName());
-					BankAppRepository.createCustomer(customer.getUserName(), customer.getFirstName(),
-							customer.getLastName(), customer.getAddress(), customer.getPhoneNumber());
+					BankAppRepository.createBankAccount(app.getType(), false, customer.getUserName());
+
+					if (!BankAppRepository.customerExists(customer.getUserName()))
+						BankAppRepository.createCustomer(customer.getUserName(), customer.getFirstName(),
+								customer.getLastName(), customer.getAddress(), customer.getPhoneNumber());
 					break;
 				case 2:
-					BankAppRepository.approveOrDenyBankApplication(applications.get(rowNum - 1).getApplicationId(), 0);
+					if(BankAppRepository.approveOrDenyBankApplication(applications.get(rowNum - 1).getApplicationId(), 0))
+						System.out.println("Bank Application Denied");
 					break;
 				}
 			}
@@ -87,10 +91,5 @@ public class OpenApplicationPage {
 			}
 		} while (true);
 		return input;
-	}
-
-	public static void main(String[] args) {
-		printHeader();
-		displayBankApplications();
 	}
 }
