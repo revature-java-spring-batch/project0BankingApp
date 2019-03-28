@@ -6,8 +6,8 @@ import repository.BankAppRepository;
 import users.Customer;
 
 public class OpenApplicationPage {
-	static String headerSpace = "%-8s %-19s %-13s %-13s %-15s %-14s %-17s %-17s\n\n";
-	static String dataSpace = "%-8d %-19d %-13s %-13s %-15s %-14s %-17s %-17s\n\n";
+	static String headerSpace = "%-8s %-19s %-13s %-13s %-15s %-14s %-30s %-17s\n\n";
+	static String dataSpace = "%-8d %-19d %-13s %-13s %-15s %-14s %-30s %-17s\n\n";
 
 	public static void displayBankApplications() {
 		int input;

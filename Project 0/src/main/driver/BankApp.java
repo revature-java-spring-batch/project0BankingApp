@@ -74,7 +74,7 @@ public class BankApp {
 				aAPage.retrievePersonalInfo(loginPage.getCurrentUser().getUserName());
 				break;
 			default:
-				System.exit(0);
+				exitApp();
 			}
 		}
 
@@ -148,7 +148,7 @@ public class BankApp {
 						JointAccountPage.getUserInput(currentUser);
 						break;
 					default:
-						System.exit(0);
+						exitApp();
 					}
 				} else if (currentUser.getUserType() == USER.EMPLOYEE) {
 					EmployeeBankingPage eBPage = new EmployeeBankingPage();
@@ -184,7 +184,7 @@ public class BankApp {
 						CustomerInfoPage.displayCustomerInfo();
 						break;
 					default:
-						System.exit(0);
+						exitApp();
 					}
 				} else if (currentUser.getUserType() == USER.ADMIN) {
 					AdminBankingPage abPage = new AdminBankingPage();
@@ -286,7 +286,7 @@ public class BankApp {
 						BankAccountInfoPage.displayAccountsInfo();
 						break;
 					default:
-						System.exit(0);
+						exitApp();
 					}
 				}
 			}
@@ -295,6 +295,12 @@ public class BankApp {
 		}
 	}
 
+	private static void exitApp() {
+		Page.sc.close();
+		System.out.println("Thank You For Using The Revature Banking App");
+		System.exit(0);
+	}
+	
 	private static byte getInput() {
 		String choice;
 		byte input;
@@ -319,7 +325,7 @@ public class BankApp {
 		for (int i = 1; i <= accList.size(); i++) {
 			System.out.println(i + ". " + accList.get(i - 1).getAccountNumber());
 		}
-		System.out.println("Please choose which account:");
+		System.out.print("Please choose which account:");
 
 		do {
 			input = getInput();

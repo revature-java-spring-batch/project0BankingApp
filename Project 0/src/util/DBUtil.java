@@ -35,8 +35,8 @@ public class DBUtil {
 		
 		try {
 			Properties p= new Properties();
-			//p.load(new FileReader("E:\\Revature\\Revature-Project-0\\Project 0\\src\\resource\\database.properties"));
-			p.load(new FileReader("C:\\Users\\Johnny Tran\\Desktop\\project0BankingApp\\Project 0\\src\\resource\\database.properties"));
+			p.load(new FileReader("E:\\Revature\\Revature-Project-0\\Project 0\\src\\resource\\database.properties"));
+			//p.load(new FileReader("C:\\Users\\Johnny Tran\\Desktop\\project0BankingApp\\Project 0\\src\\resource\\database.properties"));
 			connectionPool.setUrl(p.getProperty("url"));
 			connectionPool.setUsername(p.getProperty("username"));
 			connectionPool.setPassword(p.getProperty("password"));

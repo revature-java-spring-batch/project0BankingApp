@@ -14,7 +14,7 @@ public class DepositPage {
 		boolean validAmt = false;
 		double amount = 0;
 		while (!validAmt) {
-			System.out.println("Please enter deposit amount: ");
+			System.out.print("Please enter deposit amount: ");
 			depositAmt = Page.sc.nextLine();
 			try {
 				amount = Double.parseDouble(depositAmt);

@@ -13,7 +13,7 @@ public class WithdrawPage {
 		boolean validAmt = false;
 		double amount = 0;
 		while (!validAmt) {
-			System.out.println("Please enter withdrawal amount: ");
+			System.out.print("Please enter withdrawal amount: ");
 			withdrawalAmt = Page.sc.nextLine();
 			try {
 				amount = Double.parseDouble(withdrawalAmt);

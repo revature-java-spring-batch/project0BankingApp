@@ -66,10 +66,14 @@ public class ApplyAccountPage {
 					System.out.println("Invalid choice");
 			} while (input < 0 || input > 3);
 
-			if (input == 1)
+			if (input == 1) {
 				type = ACCOUNTTYPE.CHECKING;
-			else
+				isValidType = true;
+			}
+			else {
+				isValidType = true;
 				type = ACCOUNTTYPE.SAVINGS;
+			}
 		}
 
 		personInfo = new PersonalInfo(firstName, lastName, address, phoneNumber);

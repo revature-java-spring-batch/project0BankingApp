@@ -77,7 +77,6 @@ public class BankAppRepository {
 
 			if (rs.next() && rs.getInt(1) == 1)
 				return true;
-
 			else
 				return false;
 		} catch (SQLException e) {

@@ -14,8 +14,8 @@ public class RegisterPage implements Page {
 			System.out.print("Please enter a username: ");
 			userNameIn = Page.sc.next();
 
-			// Validate unique username here
-			if (BankAppRepository.verifyUserName(userNameIn))
+			//If username does not exist new user can create account with that username
+			if (!BankAppRepository.verifyUserName(userNameIn))
 				isValidUser = true;
 			else
 				System.out.println("Invalid Username");
